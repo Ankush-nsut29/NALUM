@@ -38,21 +38,41 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 2. Domain Filter (live, client-side)
+    // 2. Domain Filter (live, client-side) with alias mapping
+    const domainAliases = {
+        "Tech":     ["web dev", "software", "ml/ai", "ai/ml", "machine learning", "data science", "backend",
+                     "frontend", "full stack", "swe", "devops", "cloud", "cybersecurity", "mobile", "app dev",
+                     "product", "ui/ux", "design", "tech"],
+        "Non-Tech": ["consulting", "management consulting", "marketing", "hr", "operations", "strategy",
+                     "product management", "non-tech", "law", "public policy", "communications"],
+        "Core":     ["core", "mechanical", "electrical", "civil", "chemical", "manufacturing", "production",
+                     "electronics", "vlsi", "embedded", "instrumentation", "aerospace", "automotive"],
+        "Fintech":  ["finance", "fintech", "investment", "banking", "trading", "quant", "quantitative",
+                     "venture capital", "private equity", "hedge fund"]
+    };
+
     const filterPills = document.querySelectorAll(".filter-pill");
     if (filterPills.length > 0) {
         filterPills.forEach(pill => {
             pill.addEventListener("click", () => {
                 document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
                 pill.classList.add("active");
-                const domain = pill.dataset.domain;
+                const selectedDomain = pill.dataset.domain;
                 document.querySelectorAll(".mentor-card").forEach(card => {
-                    const cardDomain = card.dataset.domain || "";
-                    card.style.display = (domain === "all" || cardDomain.includes(domain)) ? "block" : "none";
+                    const cardDomain = (card.dataset.domain || "").toLowerCase();
+                    if (selectedDomain === "all") {
+                        card.style.display = "flex";
+                    } else {
+                        const aliases = domainAliases[selectedDomain] || [selectedDomain.toLowerCase()];
+                        const matches = aliases.some(alias => cardDomain.includes(alias));
+                        card.style.display = matches ? "flex" : "none";
+                    }
                 });
             });
         });
     }
+
+
 
     // 3. Booking Status Update (fetch PATCH)
     const statusBtns = document.querySelectorAll(".status-btn");
