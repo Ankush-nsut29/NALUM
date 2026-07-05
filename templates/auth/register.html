@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — Register{% endblock %}
+
+{% block content %}
+<section class="section-light" style="min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center mb-md">Create Account</h2>
+        
+        <form action="{{ url_for('auth.register') }}" method="POST">
+            <div class="form-group">
+                <label for="name" class="field-label">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="field-label">Email</label>
+                <input type="email" id="email" name="email" placeholder="your@nsut.ac.in" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="field-label">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group mb-lg">
+                <label for="role" class="field-label">Role</label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="mentor">Mentor</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up &rarr;</button>
+        </form>
+        
+        <p class="text-center mt-md text-muted">
+            Already have an account? <a href="{{ url_for('auth.login') }}" class="text-primary">Login</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

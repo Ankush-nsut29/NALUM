@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — Dashboard{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container">
+        <h1 class="mb-lg">Dashboard</h1>
+        
+        <div class="tab-nav">
+            <button class="tab-btn active" data-target="tab-profile">My Profile</button>
+            <button class="tab-btn" data-target="tab-bookings">Bookings</button>
+            <button class="tab-btn" data-target="tab-forum">Forum Activity</button>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-content active">
+            <div class="card" style="max-width: 600px;">
+                <div class="flex justify-between items-center mb-md">
+                    <h2 style="font-size: 1.5rem;">{{ user.name }}</h2>
+                    <span class="badge-domain">{{ user.role|title }}</span>
+                </div>
+                
+                <p class="mb-sm"><strong>Email:</strong> {{ user.email }}</p>
+                
+                {% if user.role == 'mentor' and user.mentor_profile %}
+                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: var(--space-md) 0;">
+                
+                <h3 class="mb-sm">Mentor Details</h3>
+                <p class="mb-xs"><strong>Domain:</strong> {{ user.mentor_profile.domain or 'Not set' }}</p>
+                <p class="mb-xs"><strong>Company:</strong> {{ user.mentor_profile.company or 'Not set' }}</p>
+                <p class="mb-xs"><strong>Experience:</strong> {{ user.mentor_profile.experience_years }} years</p>
+                <p class="mb-xs"><strong>Availability:</strong> 
+                    <span class="availability-dot avail-{{ user.mentor_profile.availability }}"></span>
+                    {{ user.mentor_profile.availability }}
+                </p>
+                <p class="mb-sm"><strong>LinkedIn:</strong> 
+                    {% if user.mentor_profile.linkedin %}
+                    <a href="{{ user.mentor_profile.linkedin }}" class="text-primary" target="_blank">{{ user.mentor_profile.linkedin }}</a>
+                    {% else %}
+                    Not set
+                    {% endif %}
+                </p>
+                
+                <div class="mt-md p-sm" style="background-color: var(--bg-light); border-radius: var(--radius-sm); padding: var(--space-sm);">
+                    <p class="field-label">Bio</p>
+                    <p style="white-space: pre-wrap; font-size: 0.9rem;">{{ user.mentor_profile.bio or 'No bio provided.' }}</p>
+                </div>
+                
+                <button type="button" id="edit-profile-btn" class="btn btn-ghost mt-md" onclick="document.getElementById('edit-profile-form').style.display='block'; this.style.display='none';">Edit Profile</button>
+                
+                <form id="edit-profile-form" action="{{ url_for('dashboard.edit_profile') }}" method="POST" style="display: none; margin-top: var(--space-md); border-top: 1px solid var(--border-color); padding-top: var(--space-md);">
+                    <h3 class="mb-sm">Edit Profile</h3>
+                    
+                    <div class="form-group">
+                        <label class="field-label">Domains</label>
+                        <div class="flex gap-sm" style="margin-top: 4px; flex-wrap: wrap; gap: 12px;">
+                            {% set current_domains = (user.mentor_profile.domain or '').split(', ') %}
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Software Engineering" {% if 'Software Engineering' in current_domains %}checked{% endif %}> Software Engineering
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Product Management" {% if 'Product Management' in current_domains %}checked{% endif %}> Product Management
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Data Science" {% if 'Data Science' in current_domains %}checked{% endif %}> Data Science
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Finance" {% if 'Finance' in current_domains %}checked{% endif %}> Finance
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Consulting" {% if 'Consulting' in current_domains %}checked{% endif %}> Consulting
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" name="domain" value="Design" {% if 'Design' in current_domains %}checked{% endif %}> Design
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company" class="field-label">Company</label>
+                        <input type="text" id="company" name="company" value="{{ user.mentor_profile.company or '' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experience_years" class="field-label">Experience (Years)</label>
+                        <input type="number" id="experience_years" name="experience_years" value="{{ user.mentor_profile.experience_years or 0 }}" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="availability" class="field-label">Availability</label>
+                        <select id="availability" name="availability">
+                            <option value="Available" {% if user.mentor_profile.availability == 'Available' %}selected{% endif %}>Available</option>
+                            <option value="Limited" {% if user.mentor_profile.availability == 'Limited' %}selected{% endif %}>Limited</option>
+                            <option value="Busy" {% if user.mentor_profile.availability == 'Busy' %}selected{% endif %}>Busy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin" class="field-label">LinkedIn URL</label>
+                        <input type="text" id="linkedin" name="linkedin" value="{{ user.mentor_profile.linkedin or '' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio" class="field-label">Bio</label>
+                        <textarea id="bio" name="bio">{{ user.mentor_profile.bio or '' }}</textarea>
+                    </div>
+                    
+                    <div class="flex gap-sm">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit-profile-form').style.display='none'; document.getElementById('edit-profile-btn').style.display='inline-flex';">Cancel</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Bookings Tab -->
+        <div id="tab-bookings" class="tab-content">
+            <h2 class="mb-md">{% if user.role == 'mentor' %}Incoming Requests{% else %}My Sent Requests{% endif %}</h2>
+            
+            <div class="grid-2">
+                {% for booking in bookings %}
+                <div class="card" id="booking-{{ booking.id }}">
+                    <div class="flex justify-between items-center mb-sm">
+                        {% if user.role == 'mentor' %}
+                        <h3 style="font-size: 1.1rem;">From: {{ booking.student.name }}</h3>
+                        {% else %}
+                        <h3 style="font-size: 1.1rem;">With: {{ booking.mentor_profile.user.name }}</h3>
+                        {% endif %}
+                        <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span>
+                    </div>
+                    
+                    <p class="text-muted mb-sm" style="font-size: 0.85rem;">
+                        Requested on {{ booking.created_at.strftime('%B %d, %Y') }}
+                    </p>
+                    
+                    <div style="background-color: var(--bg-light); padding: var(--space-sm); border-radius: var(--radius-sm); margin-bottom: var(--space-sm);">
+                        <p class="text-body" style="font-size: 0.95rem;">"{{ booking.message }}"</p>
+                    </div>
+                    
+                    {% if user.role == 'mentor' and booking.status == 'pending' %}
+                    <div class="booking-actions">
+                        <button class="status-btn btn-approve" data-id="{{ booking.id }}" data-status="approved">Approve</button>
+                        <button class="status-btn btn-reject" data-id="{{ booking.id }}" data-status="rejected">Reject</button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                {% if not bookings %}
+                <p class="text-muted">No bookings found.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Forum Activity Tab -->
+        <div id="tab-forum" class="tab-content">
+            <h2 class="mb-md">My Threads</h2>
+            <div class="flex-col gap-md mb-xl">
+                {% for thread in threads %}
+                <div class="card p-sm">
+                    <div class="flex justify-between items-center">
+                        <a href="{{ url_for('forum.thread', id=thread.id) }}" style="font-weight: 600;">{{ thread.title }}</a>
+                        <span class="text-muted" style="font-size: 0.8rem;">{{ thread.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if not threads %}
+                <p class="text-muted">You haven't started any threads.</p>
+                {% endif %}
+            </div>
+            
+            <h2 class="mb-md">My Replies</h2>
+            <div class="flex-col gap-md">
+                {% for reply in replies %}
+                <div class="card p-sm">
+                    <p class="text-muted mb-xs" style="font-size: 0.85rem;">In thread: <a href="{{ url_for('forum.thread', id=reply.thread.id) }}">{{ reply.thread.title }}</a></p>
+                    <p class="text-body" style="font-size: 0.95rem;">"{{ reply.body[:100] }}{% if reply.body|length > 100 %}...{% endif %}"</p>
+                </div>
+                {% endfor %}
+                {% if not replies %}
+                <p class="text-muted">You haven't replied to any threads.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+</section>
+{% endblock %}

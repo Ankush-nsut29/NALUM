@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — {{ thread.title }}{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container" style="max-width: 800px;">
+        <a href="{{ url_for('forum.list') }}" class="text-muted mb-md" style="display: inline-block;">&larr; Back to Forum</a>
+        
+        <!-- Original Thread Question -->
+        <div class="card mb-lg" style="border-left: 4px solid var(--primary);">
+            <h2 class="mb-sm">{{ thread.title }}</h2>
+            <p class="text-muted mb-md" style="font-size: 0.85rem;">
+                Posted by {{ thread.author.name }} on {{ thread.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+            </p>
+            <p style="white-space: pre-wrap; font-size: 1.05rem;">{{ thread.body }}</p>
+        </div>
+        
+        <h3 class="mb-md">Replies</h3>
+        
+        <!-- Replies Container for JS Append -->
+        <div id="replies-container" class="mb-lg">
+            {% for reply in thread.replies|sort(attribute='created_at', reverse=True) %}
+            <div class="reply-card card">
+                <div class="flex justify-between mb-sm">
+                    <p class="reply-author">{{ reply.author.name }}</p>
+                    <p class="reply-date">{{ reply.created_at.strftime('%B %d, %Y, %I:%M %p') }}</p>
+                </div>
+                <p style="white-space: pre-wrap;">{{ reply.body }}</p>
+            </div>
+            {% endfor %}
+            
+            {% if not thread.replies %}
+            <p class="text-muted" id="no-replies-msg">No replies yet. Be the first to answer!</p>
+            {% endif %}
+        </div>
+        
+        <!-- Reply Form -->
+        {% if session.get('user_id') %}
+        <div class="card" style="background-color: var(--bg-light);">
+            <h4 class="mb-sm">Post a Reply</h4>
+            <form id="reply-form">
+                <input type="hidden" id="thread-id" value="{{ thread.id }}">
+                <div class="form-group">
+                    <textarea id="reply-body" placeholder="Write your reply here..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Reply</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="card" style="text-align: center;">
+            <p class="text-muted mb-sm">Please log in to participate in the discussion.</p>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Login</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

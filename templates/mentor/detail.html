@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — {{ mentor.user.name }}{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container">
+        <a href="{{ url_for('mentor.list') }}" class="text-muted" style="display: inline-block; margin-bottom: var(--space-md);">&larr; Back to Mentors</a>
+        
+        <div class="grid-3">
+            <!-- Sidebar -->
+            <div class="card" style="align-self: start;">
+                <h2 class="mb-xs">{{ mentor.user.name }}</h2>
+                <span class="badge-domain mb-sm">{{ mentor.domain }}</span>
+                
+                <div class="mt-sm mb-md">
+                    <p><strong>Company:</strong> {{ mentor.company }}</p>
+                    <p><strong>Experience:</strong> {{ mentor.experience_years }} years</p>
+                </div>
+                
+                <div class="mb-md">
+                    <p class="field-label">Status</p>
+                    <div style="font-weight: 500;">
+                        <span class="availability-dot avail-{{ mentor.availability }}"></span>
+                        {{ mentor.availability }}
+                    </div>
+                </div>
+                
+                {% if mentor.linkedin %}
+                <a href="{{ mentor.linkedin }}" target="_blank" class="btn btn-ghost" style="width: 100%;">LinkedIn Profile</a>
+                {% endif %}
+            </div>
+            
+            <!-- Main Content -->
+            <div style="grid-column: span 2;">
+                <div class="card mb-lg">
+                    <h3 class="mb-md">About Me</h3>
+                    <p style="white-space: pre-wrap;">{{ mentor.bio }}</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="mb-md">Request a Session</h3>
+                    
+                    {% if session.get('user_id') %}
+                        {% if existing_booking %}
+                            <div style="padding: var(--space-md); background-color: var(--bg-light); border-radius: var(--radius-sm); text-align: center;">
+                                <p class="mb-sm">You have a <strong>{{ existing_booking.status }}</strong> request with this mentor.</p>
+                                <a href="{{ url_for('booking.my_bookings') }}" class="btn btn-primary">View My Bookings</a>
+                            </div>
+                        {% else %}
+                            <form action="{{ url_for('booking.book', mentor_id=mentor.id) }}" method="POST">
+                                <div class="form-group">
+                                    <label for="message" class="field-label">What would you like to discuss?</label>
+                                    <textarea id="message" name="message" placeholder="Please provide some context about your background and what you hope to gain from this session..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Send Request &rarr;</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted mb-sm">Please log in as a student to request a mentorship session.</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

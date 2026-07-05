@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — My Bookings{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container">
+        <h1 class="mb-lg">My <span class="text-primary">Bookings</span></h1>
+        
+        <div class="grid-2">
+            {% for booking in bookings %}
+            <div class="card">
+                <div class="flex justify-between items-center mb-sm">
+                    <h3 style="font-size: 1.1rem;">Mentorship Session with {{ booking.mentor_profile.user.name }}</h3>
+                    <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span>
+                </div>
+                
+                <p class="text-muted mb-sm" style="font-size: 0.85rem;">
+                    Requested on {{ booking.created_at.strftime('%B %d, %Y') }}
+                </p>
+                
+                <div style="background-color: var(--bg-light); padding: var(--space-sm); border-radius: var(--radius-sm);">
+                    <p class="field-label">Your Message</p>
+                    <p class="text-body" style="font-size: 0.95rem;">{{ booking.message }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if not bookings %}
+            <div style="grid-column: span 2; text-align: center; padding: var(--space-xl) 0;">
+                <p class="text-muted mb-md">You haven't requested any mentorship sessions yet.</p>
+                <a href="{{ url_for('mentor.list') }}" class="btn btn-primary">Browse Mentors</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

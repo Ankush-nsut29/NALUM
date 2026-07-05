@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — Open Discussion{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container">
+        <div class="flex justify-between items-center mb-lg">
+            <h1 class="text-large">Open <span class="text-primary">Discussion</span></h1>
+            <a href="{{ url_for('forum.new') }}" class="btn btn-primary">Start a Thread &rarr;</a>
+        </div>
+        
+        <div class="flex-col gap-md">
+            {% for thread in threads %}
+            <div class="card">
+                <div class="flex justify-between items-center mb-xs">
+                    <h3 style="font-size: 1.15rem;">
+                        <a href="{{ url_for('forum.thread', id=thread.id) }}" style="color: inherit;">{{ thread.title }}</a>
+                    </h3>
+                    <span class="badge-domain">{{ thread.replies|length }} Replies</span>
+                </div>
+                
+                <p class="text-muted mb-sm" style="font-size: 0.85rem;">
+                    Posted by {{ thread.author.name }} on {{ thread.created_at.strftime('%B %d, %Y') }}
+                </p>
+                
+                <p class="text-body thread-preview mb-sm">
+                    {{ thread.body }}
+                </p>
+                
+                <div>
+                    <a href="{{ url_for('forum.thread', id=thread.id) }}" class="btn btn-ghost" style="padding: var(--space-xs) var(--space-sm); font-size: 0.85rem;">View Replies &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if not threads %}
+            <p class="text-muted text-center" style="padding: var(--space-xl) 0;">No discussions yet. Be the first to start a thread!</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

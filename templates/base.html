@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NALUM — Alumni Mentorship Platform{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-logo">
+                <span class="nav-logo-text"><span class="text-primary">NALUM</span> <span
+                        class="text-dark">Mentorship</span></span>
+                <span class="nav-logo-sub">PLATFORM</span>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('mentor.list') }}" class="nav-link">Mentors</a>
+                <a href="{{ url_for('forum.list') }}" class="nav-link">Forum</a>
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard.index') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost">Logout</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="section-light"
+        style="padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        <p>&copy; 2026 NALUM — NSUT Alumni Mentorship Platform.</p>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+
+</html>

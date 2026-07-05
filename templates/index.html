@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — NSUT Alumni Mentorship Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="section-white">
+    <div class="section-container" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
+        <div class="flex justify-between items-center mb-xl" style="gap: var(--space-xl); flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <h1 class="text-hero mb-md">NSUT Alumni <span class="text-primary">Mentorship</span> Platform</h1>
+                <p class="text-body" style="font-size: 1.1rem;">Connect with distinguished alumni, get personalized career guidance, and join a thriving community of learners and leaders.</p>
+            </div>
+            <div class="card flex-col gap-md" style="min-width: 280px; background-color: var(--bg-light); border-radius: var(--radius-lg); padding: var(--space-lg);">
+                <div style="text-align: center; margin-bottom: var(--space-xs);">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 4px;">Get Started</h3>
+                    <p class="text-muted" style="font-size: 0.85rem;">Join the NALUM network</p>
+                </div>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">Login to Explore &rarr;</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-ghost" style="width: 100%; justify-content: center; background-color: var(--bg-white);">Create Account</a>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section-light">
+    <div class="section-container">
+        <h2 class="text-large text-center mb-xl">Platform <span class="text-primary">Features</span></h2>
+        <div class="grid-3">
+            <div class="card">
+                <div class="icon-circle">👩‍🏫</div>
+                <h3 class="mb-sm">Mentorship</h3>
+                <p>Browse through our extensive directory of alumni working in top tech companies, finance, and core sectors.</p>
+            </div>
+            <div class="card">
+                <div class="icon-circle">🗓️</div>
+                <h3 class="mb-sm">Booking</h3>
+                <p>Request 1-on-1 mentorship sessions seamlessly. Track your requests and manage your schedule in one place.</p>
+            </div>
+            <div class="card">
+                <div class="icon-circle">💬</div>
+                <h3 class="mb-sm">Community</h3>
+                <p>Post your queries in the open forum and get answers from multiple experienced alumni and peers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="section-primary">
+    <div class="section-container hero-stats">
+        <div class="grid-3">
+            <div>
+                <div class="stat-number">{{ mentor_count }}+</div>
+                <div class="stat-label">Mentors Onboarded</div>
+            </div>
+            <div>
+                <div class="stat-number">{{ session_count }}+</div>
+                <div class="stat-label">Sessions Completed</div>
+            </div>
+            <div>
+                <div class="stat-number">{{ discussion_count }}+</div>
+                <div class="stat-label">Discussions</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}NALUM — Mentor Profiles{% endblock %}
+
+{% block content %}
+<section class="section-white">
+    <div class="section-container">
+        <div class="flex justify-between items-center mb-md">
+            <h1 class="text-large">Browse <span class="text-primary">Mentors</span></h1>
+        </div>
+        
+        <div class="filter-container">
+            <div class="filter-pill active" data-domain="all">All</div>
+            <div class="filter-pill" data-domain="Software Engineering">Software Engineering</div>
+            <div class="filter-pill" data-domain="Product Management">Product Management</div>
+            <div class="filter-pill" data-domain="Data Science">Data Science</div>
+            <div class="filter-pill" data-domain="Finance">Finance</div>
+            <div class="filter-pill" data-domain="Consulting">Consulting</div>
+            <div class="filter-pill" data-domain="Design">Design</div>
+        </div>
+
+        <div class="grid-3">
+            {% for mentor in mentors %}
+            <div class="card mentor-card flex-col justify-between" data-domain="{{ mentor.domain }}">
+                <div>
+                    <div class="mentor-card-header flex justify-between items-center">
+                        <h3 style="font-size: 1.25rem;">{{ mentor.user.name }}</h3>
+                        <span class="badge-domain">{{ mentor.domain }}</span>
+                    </div>
+                    
+                    <p class="text-muted" style="font-size: 0.9rem;">
+                        {{ mentor.company }} &bull; {{ mentor.experience_years }} YOE
+                    </p>
+                    
+                    <div class="mt-sm" style="font-size: 0.85rem;">
+                        <span class="availability-dot avail-{{ mentor.availability }}"></span>
+                        {{ mentor.availability }}
+                    </div>
+
+                    <p class="text-body mentor-bio-preview">
+                        {{ mentor.bio }}
+                    </p>
+                </div>
+                
+                <div class="mt-md">
+                    <a href="{{ url_for('mentor.detail', id=mentor.id) }}" class="btn btn-ghost" style="width: 100%;">View Profile &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if not mentors %}
+            <p class="text-muted">No mentors found. Please check back later.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
