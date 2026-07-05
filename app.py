@@ -72,8 +72,15 @@ def _seed_if_empty():
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "nalum-secret-key"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///nalum.db"
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "nalum-secret-key")
+
+    # On Render, DATABASE_URL is set automatically by the PostgreSQL addon.
+    # Locally, fall back to SQLite so you don't need Postgres installed.
+    db_url = os.environ.get("DATABASE_URL", "sqlite:///nalum.db")
+    # Render provides postgres:// but SQLAlchemy 1.4+ needs postgresql://
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
