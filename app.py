@@ -110,6 +110,8 @@ def create_app():
     return app
 
 
+# Expose app at module level so gunicorn can use `app:app`
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
     app.run(debug=True)
